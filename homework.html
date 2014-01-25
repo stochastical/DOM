@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="homework.css" />
+        <title>Homework</title>
+    </head>
+    <body>
+        <div class="content">
+            <h1>Попап</h1>
+            <p>Есть ссылка с классом 'popup-link', у нее есть два атрибута: "data-title" и "data-message".</p>
+            <p>По клику на неё, не должно быть перехода по URL, а должен открываться попап (создаваться и добавляться в DOM) с заголовком и сообщением из data-атрибутов.</p>
+            <p>Причем в атрибуте "data-message" может присутствовать специальные символы "%s", которые должны быть заменены на URL ссылки.</p>
+            <p>У попапа должны быть две кнопки "Да" и "Нет". Первая осуществляет переход по URL ссылки, вторая закрывает попап (и удаляет его из DOM).</p>
+            <p>Визуальные, функциональные и логические улучшения приветствуются!</p>
+            <ul>
+                <li>
+                    <a href="http://yandex.ru/" class="popup-link"
+                        data-title="Переход на внешний ресурс"
+                        data-message="Вы уверены, что хотите перейти на '%s'?">Яндекс</a>
+                </li>
+                <li>
+                    <a href="http://google.com/" class="popup-link"
+                        data-title="оу!"
+                        data-message="А точно?">Гугл</a>
+                </li>
+            </ul>
+        </div>
+        <script src="homework.js"></script>
+    </body>
+</html>
