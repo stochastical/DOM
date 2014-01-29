@@ -178,7 +178,7 @@
 	 * Когда страница загружена прикрепляем обработчик через анонимную функцию
 	 * Обработчик теперь глобальный, на все клики
 	 */
-	setEventListener(document, "load", 
+	setEventListener(window, "load", 
 		function() { setEventListener(document.body, "click", _onMouseClick) } 
 		);
 
