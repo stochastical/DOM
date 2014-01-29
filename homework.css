@@ -7,7 +7,7 @@ body
 
 .popup.container {
 	position: fixed;
-	display: table;
+	display: none;
 	top: 0;
 	left: 0;
 	width: 100%;

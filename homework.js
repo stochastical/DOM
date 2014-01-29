@@ -2,11 +2,10 @@
 ( function() {
 	'use strict';
 
-	var linksCollection;
 	var popupObj;			// кешируем всё дерево в рамках модуля
 	var popupTree = {		// описание дерева объектов для построения попапа
-		tag:'div', className1:'popup', className2:'container', childs: [
-			{ tag:'div', className1:'curtain' , childs:
+		tag:'div', className:'popup', className1:'container', childs: [
+			{ tag:'div', className:'curtain' , childs:
 			{ tag:'div', className:'form', childs: [
 				{ tag:'span', className:'title', id:'popup_title', text:"" },
 				{ tag:'br' },
@@ -24,19 +23,20 @@
 
 
 	/**
-	 * Обработчик клика по ссылке с классом 'popup-link'
+	 * Обработчик клика по странице
 	 * @param {Event} e событие клика
 	 * @private
 	 */
 	function _onMouseClick(e) {
 		e = e || window.event;
-		if (e.preventDefault) 
-			e.preventDefault();
-		else 
-			e.returnValue = false;
-		if (this.classList.contains('popup-link'))				// проверка, а то ли мы обрабаываем. Нужно ли?
-			openPopupFromLink(this);
-		return false;
+		if (e.target.classList.contains('popup-link')) {
+			if (e.preventDefault) 
+				e.preventDefault();
+			else 
+				e.returnValue = false;
+			return openPopupFromLink(e.target);
+		}
+		return true;
 	}
 
 	/**
@@ -47,7 +47,6 @@
 	function openPopupFromLink(link) {
 
 		function redirector() {
-			//console.log("Redirecting to "+url);
 			hidePopup();
 			window.location.assign(url);
 		}
@@ -78,39 +77,22 @@
 			popupObj.okButton = popupObj.node.getElementsByClassName('popup_OK')[0];
 			popupObj.title = popupObj.node.getElementsByClassName('title')[0].firstChild;
 			popupObj.message = popupObj.node.getElementsByClassName('message')[0].firstChild;
-			
+			document.body.appendChild(popupObj.node);
 		}
 		popupObj.onOkHandler = onOk;
 		setEventListener(popupObj.okButton, 'click', onOk);
 		popupObj.title.textContent = title;
 		popupObj.message.textContent = message;
-		document.body.appendChild(popupObj.node);
+		popupObj.node.style.display = 'table';
 		popupObj.okButton.focus();
-		
 	}
 
 	/**
-	 *  Удаляем DOM-узел с сообщением
+	 *  Прячем DOM-узел с сообщением
 	 */
 	function hidePopup() {
-		if ( (popupObj !== undefined) && (popupObj.node instanceof Element) && 
-			((popupObj.node.parentNode instanceof Element))) {
-				unsetEventListener(popupObj.okButton, 'click', popupObj.onOkHandler);
-				popupObj.node.parentNode.removeChild(popupObj.node);
-		}
-	}
-
-	/**
-	 * Прикрепляет обработчик клика к ссылкам с классом 'popup-link' 
-	 * Живая коллекция ссылок кешируется в рамках модуля
-	 * @param {Event} e событие клика
-	 */
-	function setupHandlers(e) {
-		var i;
-		e = e || window.event;
-		if (linksCollection === undefined) linksCollection = document.getElementsByClassName('popup-link'); 
-		for ( i=0; i<linksCollection.length; i++ ) {
-			setEventListener(linksCollection[i], "click", _onMouseClick);
+		if ( (popupObj !== undefined) && (popupObj.node instanceof Element)) {
+			popupObj.node.style.display = 'none';
 		}
 	}
 
@@ -191,10 +173,14 @@
 		if (obj.detachEvent) obj.detachEvent("on"+eventName, handler);
 	}
 
+
 	/**
-	 * Когда страница загружена прикрепляем обработчики
+	 * Когда страница загружена прикрепляем обработчик через анонимную функцию
+	 * Обработчик теперь глобальный, на все клики
 	 */
-	setEventListener(window, "load", setupHandlers);
+	setEventListener(document, "load", 
+		function() { setEventListener(document.body, "click", _onMouseClick) } 
+		);
 
 
 /*
